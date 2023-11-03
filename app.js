@@ -1,8 +1,6 @@
 require("dotenv").config();
 
 const express = require("express");
-// Cron
-const cron = require("node-cron");
 // Path
 const path = require("path");
 // logger
