@@ -1,11 +1,31 @@
 const axios = require("axios");
 const { Tweet } = require("../models");
 
+let count = 0;
+
+const getTwitterAPI = () => {
+  let apiKey = "";
+  switch (count) {
+    case 0:
+      apiKey = process.env.APIFY_API_KEY_1;
+      count++;
+      break;
+    case 1:
+      apiKey = process.env.APIFY_API_KEY_2;
+      count++;
+      break;
+    case 2:
+      apiKey = process.env.APIFY_API_KEY_3;
+      count = 0;
+      break;
+  }
+  return apiKey;
+};
+
 const getTweet = async () => {
+  let apiKey = getTwitterAPI();
   try {
-    const response = await axios.get(
-      `https://api.apify.com/v2/actor-tasks/open_can~tweet-flash-task/run-sync-get-dataset-items?token=${process.env.APIFY_API_KEY}`
-    );
+    const response = await axios.get(apiKey);
 
     await Tweet.removeAllTweets();
 
@@ -17,9 +37,9 @@ const getTweet = async () => {
         username,
         timestamp,
       } = tweet;
-      
+
       const date = new Date(timestamp);
-      
+
       await Tweet.create({
         tweetAvatar,
         url,
@@ -29,7 +49,7 @@ const getTweet = async () => {
       });
     });
 
-    console.log("Updated Tweet")
+    console.log("Updated Tweet");
   } catch (err) {
     console.log(err);
   }

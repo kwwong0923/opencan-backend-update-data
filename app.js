@@ -8,9 +8,9 @@ const logger = require("morgan");
 // Cors
 const cors = require("cors");
 // Connect DB
-const connectDB = require("./db/connectDB")
+const connectDB = require("./db/connectDB");
 // Methods
-const { getNews, getTweet, getCurrencyRate} = require("./functions")
+const { getNews, getTweet, getCurrencyRate } = require("./functions");
 
 let app = express();
 
@@ -23,11 +23,11 @@ app.use(express.static("./public"));
 app.get("/", (req, res) => {
   const publicPath = path.join(__dirname, "public");
   res.sendFile(path.join(publicPath, "index.html"));
-})
+});
 
 const port = process.env.PORT || 5000;
 
-const start = async() => {
+const start = async () => {
   try {
     await connectDB(process.env.MONGODB_URL);
     console.log("Connect to Database");
@@ -40,23 +40,22 @@ const start = async() => {
     await getTweet();
 
     setInterval(async () => {
-      console.log("20 minutes Interval");
+      console.log("5 minutes Interval");
       await getTweet();
-    }, 20 * 60 * 1000); // 20 minutes
+    }, 5 * 60 * 1000); // 5 minutes
 
     setInterval(async () => {
-      console.log("1 Hour Interval")
+      console.log("1 Hour Interval");
       await getNews();
     }, 30 * 60 * 1000); // 1 hour
 
     setInterval(async () => {
-      console.log("2 Hours Interval")
+      console.log("2 Hours Interval");
       await getCurrencyRate();
     }, 2 * 60 * 60 * 1000); // 2 hours
-  }
-  catch (err) {
+  } catch (err) {
     console.log(err);
   }
-}
+};
 
 start();
